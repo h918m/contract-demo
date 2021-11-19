@@ -10,7 +10,9 @@ interface IFluiDex {
      * @param tokenAddr the ERC20 token address
      * @return the new ERC20 token tokenId
      */
-    function addToken(address origin, address tokenAddr) external returns (uint16);
+    function addToken(address origin, address tokenAddr)
+        external
+        returns (uint16);
 
     /**
      * @param to the L2 address (bjjPubkey) of the deposit target.

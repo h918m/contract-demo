@@ -114,12 +114,12 @@ contract FluiDexDemo is
     /**
      * @param to the L2 address (bjjPubkey) of the deposit target.
      */
-    function depositETH(address origin, bytes32 to) 
-        external 
-        payable 
-        override 
+    function depositETH(address origin, bytes32 to)
+        external
+        payable
+        override
         orCreateUser(origin, to)
-        onlyRole(DELEGATE_ROLE) 
+        onlyRole(DELEGATE_ROLE)
     {
         emit Deposit(ETH_ID, to, msg.value);
     }
@@ -133,7 +133,13 @@ contract FluiDexDemo is
         IERC20 token,
         bytes32 to,
         uint128 amount
-    ) external override nonReentrant tokenExist(token) orCreateUser(origin, to) {
+    )
+        external
+        override
+        nonReentrant
+        tokenExist(token)
+        orCreateUser(origin, to)
+    {
         uint16 tokenId = tokenAddrToId[address(token)];
 
         uint256 balanceBeforeDeposit = token.balanceOf(address(this));
@@ -191,24 +197,21 @@ contract FluiDexDemo is
         console.logBytes32(h);
 
         uint256 h_lo = 0;
-        for(uint i=0;i<16;i++){
-            uint tmp = uint(uint8(h[i+16]))<<(120-8*i);
+        for (uint256 i = 0; i < 16; i++) {
+            uint256 tmp = uint256(uint8(h[i + 16])) << (120 - 8 * i);
             h_lo = h_lo + tmp;
-
         }
         uint256 h_hi = 0;
-        for(uint i=0;i<16;i++){
-            uint tmp = uint(uint8(h[i]))<<(120-8*i);
+        for (uint256 i = 0; i < 16; i++) {
+            uint256 tmp = uint256(uint8(h[i])) << (120 - 8 * i);
             h_hi = h_hi + tmp;
         }
 
         assert(_public_inputs[2] == h_hi);
         assert(_public_inputs[3] == h_lo);
 
-        return verifier.verify_serialized_proof(
-            _public_inputs,
-            _serialized_proof
-        );           
+        return
+            verifier.verify_serialized_proof(_public_inputs, _serialized_proof);
     }
 
     /**
@@ -234,11 +237,7 @@ contract FluiDexDemo is
             assert(_public_inputs[0] == state_roots[_block_id - 1]);
         }
 
-        return verifyBlock(
-            _public_inputs,
-            _serialized_proof,
-            _public_data            
-        );
+        return verifyBlock(_public_inputs, _serialized_proof, _public_data);
     }
 
     /**
@@ -251,10 +250,15 @@ contract FluiDexDemo is
         uint256[] memory _serialized_proof,
         bytes memory _public_data
     ) external override returns (bool) {
-
-        require(block_states[_block_id] != BlockState.Verified, "Block must not be submitted twice");
+        require(
+            block_states[_block_id] != BlockState.Verified,
+            "Block must not be submitted twice"
+        );
         if (_block_id > 0) {
-            require(block_states[_block_id - 1] == BlockState.Verified, "Previous block must be verified");
+            require(
+                block_states[_block_id - 1] == BlockState.Verified,
+                "Previous block must be verified"
+            );
         }
 
         bool ret = verifySubmitting(
@@ -262,9 +266,9 @@ contract FluiDexDemo is
             _public_inputs,
             _serialized_proof,
             _public_data
-            );
-        
-        if (!ret){
+        );
+
+        if (!ret) {
             return ret;
         }
 

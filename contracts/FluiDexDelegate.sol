@@ -8,7 +8,6 @@ import "./IFluiDex.sol";
 import "./IFluiDexDelegate.sol";
 
 contract FluiDexDelegate is AccessControl, IFluiDexDelegate, ReentrancyGuard {
-
     IFluiDex target;
     event TargetChange(IFluiDex prev, IFluiDex now);
 
@@ -34,11 +33,7 @@ contract FluiDexDelegate is AccessControl, IFluiDexDelegate, ReentrancyGuard {
      * @param tokenAddr the ERC20 token address
      * @return the new ERC20 token tokenId
      */
-    function addToken(address tokenAddr) 
-        external 
-        override
-        returns (uint16) 
-    {
+    function addToken(address tokenAddr) external override returns (uint16) {
         return target.addToken(msg.sender, tokenAddr);
     }
 
@@ -74,6 +69,12 @@ contract FluiDexDelegate is AccessControl, IFluiDexDelegate, ReentrancyGuard {
         uint256[] memory _serialized_proof,
         bytes memory _public_data
     ) external override returns (bool) {
-        return target.submitBlock(_block_id, _public_inputs, _serialized_proof, _public_data);
+        return
+            target.submitBlock(
+                _block_id,
+                _public_inputs,
+                _serialized_proof,
+                _public_data
+            );
     }
 }
